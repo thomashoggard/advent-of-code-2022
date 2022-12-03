@@ -1,5 +1,4 @@
 const text = Deno.readTextFileSync("./day1/input");
-
 const data = text.split("\n");
 
 const elfs: number[] = [0];
