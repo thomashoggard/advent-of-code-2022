@@ -7,9 +7,10 @@ const input = Deno.readTextFileSync(`./day${DAY}/input`)
 function solve(input: string[]) {
   const result = null;
 
-  input.forEach((line) => {
+  for (let i = 0; i < input.length; i++) {
+    const line = input[i];
     console.log(line);
-  });
+  }
 
   return result;
 }
