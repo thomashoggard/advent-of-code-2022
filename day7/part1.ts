@@ -76,10 +76,6 @@ function buildTree(input: string[]) {
   return root;
 }
 
-const tree = buildTree(input);
-
-let sum = 0;
-
 function indexTree(tree: MyNode) {
   let totalsize = 0;
 
@@ -96,30 +92,57 @@ function indexTree(tree: MyNode) {
   return totalsize;
 }
 
-function findDirToDelete(tree: MyNode) {
-  if (tree.dirsize >= 8381165) {
-    console.log(tree.dir, tree.dirsize);
+function searchTree(tree: MyNode, matcher: (node: MyNode) => boolean) {
+  const files: MyNode[] = [];
+
+  if (matcher(tree)) {
+    files.push(tree);
   }
 
   tree.children.forEach((n) => {
-    findDirToDelete(n);
+    files.push(...searchTree(n, matcher));
   });
+
+  return files;
 }
 
 function parseTree(tree: MyNode, depth = 0) {
-  console.log(Array(depth).join(" ") + "- " + tree.dir + " (dir)");
+  console.log(
+    `${Array(depth).join(" ")} - ${tree.dir} (dir, size=${tree.dirsize})`
+  );
+  tree.children.forEach((n) => {
+    parseTree(n, depth + 1);
+  });
   tree.files.forEach((f) => {
     console.log(
-      Array(depth).join(" ") + `- ${f.filename} (file, size=${f.size})`
+      Array(depth + 1).join(" ") + ` - ${f.filename} (file, size=${f.size})`
     );
-  });
-
-  tree.children.forEach((n) => {
-    parseTree(n, (depth += 1));
   });
 }
 
+const tree = buildTree(input);
 indexTree(tree);
+// parseTree(tree);
 
-// console.log(sum);
-console.log(findDirToDelete(tree));
+// Part 1
+console.log(
+  "Part 1:",
+  searchTree(tree, (node) => node.dirsize <= 100000)
+    .map((n) => n.dirsize)
+    .reduce((sum, size) => sum + size, 0)
+);
+
+// Part 2
+const FILE_SYSTEM_SIZE = 70000000;
+const UPDATE_SIZE = 30000000;
+const freeSpace = FILE_SYSTEM_SIZE - tree.dirsize;
+const increaseSize = UPDATE_SIZE - freeSpace;
+
+console.log(
+  "Part 2:",
+  Math.min(
+    ...searchTree(tree, (node) => node.dirsize >= increaseSize).map(
+      (n) => n.dirsize
+    )
+  )
+);
