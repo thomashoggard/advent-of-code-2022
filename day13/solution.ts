@@ -1,3 +1,5 @@
+import { sum } from "../sum.ts";
+
 const DAY = 13;
 
 const input = Deno.readTextFileSync(`./day${DAY}/input`)
@@ -86,10 +88,6 @@ function part2(pairs: PacketPair[]) {
     ordered.findIndex((v) => JSON.stringify(v) === JSON.stringify([[6]])) + 1;
 
   return dividerOne * dividerTwo;
-}
-
-function sum(...n: number[]) {
-  return n.reduce((sum, n) => sum + n, 0);
 }
 
 const pairs = parseInput(input);
